@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_blood_type_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <h2 class="mb-4">
+                            Ficha de factura
+                            <span t-if="o.name and o.name != '/'" t-field="o.name"/>
+                            <span t-else="">(Borrador)</span>
+                        </h2>
+
+                        <table class="table table-sm table-borderless w-100 mb-4">
+                            <tr>
+                                <th class="w-25">Cliente</th>
+                                <td><span t-field="o.partner_id.display_name"/></td>
+                                <th class="w-25">Fecha factura</th>
+                                <td><span t-field="o.invoice_date"/></td>
+                            </tr>
+                            <tr>
+                                <th>Vendedor</th>
+                                <td><span t-field="o.invoice_user_id.name"/></td>
+                                <th>Fecha vencimiento</th>
+                                <td><span t-field="o.invoice_date_due"/></td>
+                            </tr>
+                            <tr>
+                                <th>Tipo de Sangre</th>
+                                <td>
+                                    <strong t-if="o.blood_type_id" t-field="o.blood_type_id.name"/>
+                                    <span t-else="" class="text-muted">Sin definir</span>
+                                </td>
+                                <th>Estado</th>
+                                <td><span t-field="o.state"/></td>
+                            </tr>
+                        </table>
+
+                        <h4>Líneas de factura</h4>
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Descripción</th>
+                                    <th class="text-end">Cantidad</th>
+                                    <th class="text-end">Precio</th>
+                                    <th class="text-end">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="product_lines" t-value="o.invoice_line_ids.filtered(lambda l: l.display_type == 'product')"/>
+                                <tr t-foreach="product_lines" t-as="line">
+                                    <td><span t-field="line.product_id.display_name"/></td>
+                                    <td><span t-field="line.name"/></td>
+                                    <td class="text-end"><span t-field="line.quantity"/></td>
+                                    <td class="text-end">
+                                        <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="line.price_subtotal" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr t-if="not product_lines">
+                                    <td colspan="5" class="text-center text-muted">La factura no tiene líneas.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="row justify-content-end">
+                            <div class="col-5">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <th>Base imponible</th>
+                                        <td class="text-end">
+                                            <span t-field="o.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Impuestos</th>
+                                        <td class="text-end">
+                                            <span t-field="o.amount_tax" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <th>Total</th>
+                                        <td class="text-end">
+                                            <strong t-field="o.amount_total" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div t-if="o.narration" class="mt-4">
+                            <h4>Comentario</h4>
+                            <div t-field="o.narration"/>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

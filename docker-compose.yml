@@ -1,0 +1,42 @@
+# Entorno de desarrollo: Odoo 17 + PostgreSQL 15
+# Levantar:  docker compose up -d
+# Logs:      docker compose logs -f odoo
+# Apagar:    docker compose down        (conserva la base de datos)
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres        # Odoo necesita conectarse a la BD "postgres" para crear bases nuevas
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: odoo:17
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - odoo-web-data:/var/lib/odoo          # filestore (adjuntos, sesiones)
+      - ./config:/etc/odoo                   # odoo.conf
+      - ./addons:/mnt/extra-addons           # AQUÍ va nuestro módulo
+    # --dev=reload : reinicia Odoo al cambiar un .py
+    # --dev=xml    : lee las vistas XML desde disco sin actualizar el módulo
+    # --dev=qweb   : recompila plantillas QWeb al vuelo
+    command: odoo --dev=reload,qweb,xml
+
+volumes:
+  db-data:
+  odoo-web-data:

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_move_form_inherit_blood_type" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.patient.blood.type</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Punto 3: campo Tipo de Sangre después de Fecha de vencimiento.
+                 En Odoo 17 "Vendedor" (invoice_user_id) está en la pestaña "Otra información",
+                 por eso el campo se ubica inmediatamente debajo del vencimiento.
+                 Solo lectura una vez validada la factura. -->
+            <xpath expr="//div[@name='due_date']" position="after">
+                <field name="blood_type_id"
+                       options="{'no_create': True}"
+                       invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"
+                       readonly="state != 'draft'"/>
+            </xpath>
+
+            <!-- Punto 4: botón "Comentario" después de "Registrar pago", visible solo con la
+                 factura validada y pendiente de pago (estado "Abierto" de versiones anteriores).
+                 Se reutilizan las mismas condiciones de visibilidad del botón Registrar pago. -->
+            <xpath expr="//header/button[@name='action_register_payment']" position="after">
+                <button name="action_open_blood_type_comment_wizard"
+                        type="object"
+                        string="Comentario"
+                        invisible="state != 'posted' or payment_state not in ('not_paid', 'partial') or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"/>
+
+                <!-- Wizard JS (OWL): edición de la fecha de factura vía RPC. Solo en borrador. -->
+                <button name="action_open_invoice_date_dialog"
+                        type="object"
+                        string="Editar fecha"
+                        invisible="state != 'draft' or move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"/>
+
+                <!-- Punto 7: descarga del reporte PDF con los datos de la factura. -->
+                <button name="%(patient_blood_type.action_report_blood_type_invoice)d"
+                        type="action"
+                        string="Descargar PDF"
+                        invisible="move_type not in ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt')"/>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

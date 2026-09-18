@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vista lista -->
+    <record id="view_blood_type_tree" model="ir.ui.view">
+        <field name="name">patient.blood.type.tree</field>
+        <field name="model">patient.blood.type</field>
+        <field name="arch" type="xml">
+            <tree string="Tipos de Sangre">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="rh_factor" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vista formulario -->
+    <record id="view_blood_type_form" model="ir.ui.view">
+        <field name="name">patient.blood.type.form</field>
+        <field name="model">patient.blood.type</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de Sangre">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" placeholder="Ej.: O+"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista de búsqueda -->
+    <record id="view_blood_type_search" model="ir.ui.view">
+        <field name="name">patient.blood.type.search</field>
+        <field name="model">patient.blood.type</field>
+        <field name="arch" type="xml">
+            <search string="Tipos de Sangre">
+                <field name="name"/>
+                <filter name="positive" string="Positivos" domain="[('rh_factor', '=', 'positive')]"/>
+                <filter name="negative" string="Negativos" domain="[('rh_factor', '=', 'negative')]"/>
+                <separator/>
+                <filter name="inactive" string="Archivados" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_blood_type" model="ir.actions.act_window">
+        <field name="name">Tipo de Sangre</field>
+        <field name="res_model">patient.blood.type</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Registre el primer tipo de sangre
+            </p>
+            <p>
+                Los tipos de sangre se usan en las facturas de los pacientes.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menús: Datos > Datos de los pacientes > Tipo de Sangre -->
+    <menuitem id="menu_root"
+              name="Datos"
+              web_icon="patient_blood_type,static/description/icon.png"
+              sequence="60"/>
+
+    <menuitem id="menu_patient_data"
+              name="Datos de los pacientes"
+              parent="menu_root"
+              sequence="10"/>
+
+    <menuitem id="menu_blood_type"
+              name="Tipo de Sangre"
+              parent="menu_patient_data"
+              action="action_blood_type"
+              sequence="10"/>
+
+</odoo>

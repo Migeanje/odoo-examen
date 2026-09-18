@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Acción de reporte: también aparece en el menú "Imprimir" de la factura. -->
+    <record id="action_report_blood_type_invoice" model="ir.actions.report">
+        <field name="name">Ficha de factura - Tipo de sangre</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">patient_blood_type.report_blood_type_invoice</field>
+        <field name="report_file">patient_blood_type.report_blood_type_invoice</field>
+        <field name="print_report_name">'Ficha - %s' % (object.name if object.name != '/' else 'Borrador')</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

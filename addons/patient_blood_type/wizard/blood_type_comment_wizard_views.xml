@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_blood_type_comment_wizard_form" model="ir.ui.view">
+        <field name="name">patient.blood.type.comment.wizard.form</field>
+        <field name="model">patient.blood.type.comment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tipo de sangre">
+                <!-- Campos técnicos: necesarios para evaluar los dominios en el cliente. -->
+                <field name="move_id" invisible="1"/>
+                <field name="invoice_blood_type_id" invisible="1"/>
+
+                <div class="text-center mb-4">
+                    <h1>TIPOS DE SANGRE RESTANTES</h1>
+                </div>
+                <p>Por favor elegir los tipos de sangre a continuación:</p>
+
+                <div class="row">
+                    <div class="col-12 col-md-4">
+                        <label for="remaining_blood_type_id" class="fw-bold"/>
+                        <field name="remaining_blood_type_id"
+                               nolabel="1"
+                               options="{'no_create': True, 'no_open': True}"
+                               domain="[('id', '!=', invoice_blood_type_id)]"/>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="remaining_positive_blood_type_id" class="fw-bold"/>
+                        <field name="remaining_positive_blood_type_id"
+                               nolabel="1"
+                               options="{'no_create': True, 'no_open': True}"
+                               domain="[('rh_factor', '=', 'positive'), ('id', '!=', invoice_blood_type_id)]"/>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="remaining_negative_blood_type_id" class="fw-bold"/>
+                        <field name="remaining_negative_blood_type_id"
+                               nolabel="1"
+                               options="{'no_create': True, 'no_open': True}"
+                               domain="[('rh_factor', '=', 'negative'), ('id', '!=', invoice_blood_type_id)]"/>
+                    </div>
+                </div>
+
+                <footer>
+                    <button name="action_update_comment"
+                            type="object"
+                            string="Actualizar comentario"
+                            class="btn-primary"/>
+                    <button string="Anular operación"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

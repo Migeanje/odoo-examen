@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_patient_blood_type_user,patient.blood.type.user,model_patient_blood_type,base.group_user,1,0,0,0
+access_patient_blood_type_invoice,patient.blood.type.invoice,model_patient_blood_type,account.group_account_invoice,1,1,1,1
+access_patient_blood_type_comment_wizard,patient.blood.type.comment.wizard,model_patient_blood_type_comment_wizard,base.group_user,1,1,1,1
